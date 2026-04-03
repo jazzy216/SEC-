@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sec+ Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090f;--surface:#0d1117;--surface2:#131a24;--surface3:#1a2333;
+  --border:#1e2d42;--border2:#243349;
+  --text:#e2eaf4;--text2:#8da3bc;--text3:#4d6580;
+  --green:#00e5a0;--green2:#00b87d;--green-bg:rgba(0,229,160,0.08);--green-border:rgba(0,229,160,0.2);
+  --red:#ff4d6d;--red-bg:rgba(255,77,109,0.08);--red-border:rgba(255,77,109,0.2);
+  --blue:#3d9bff;--blue-bg:rgba(61,155,255,0.08);--blue-border:rgba(61,155,255,0.2);
+  --amber:#ffb84d;--amber-bg:rgba(255,184,77,0.08);--amber-border:rgba(255,184,77,0.2);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.08);--purple-border:rgba(167,139,250,0.2);
+  --cyan:#22d3ee;--cyan-bg:rgba(34,211,238,0.08);--cyan-border:rgba(34,211,238,0.2);
+  --font-display:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --r:10px;--r2:14px;--r3:20px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;font-size:15px;line-height:1.6;}
+.app{display:flex;flex-direction:column;min-height:100vh;}
+
+/* NAV */
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:10px;letter-spacing:-0.5px;}
+.nav-logo span{color:var(--green);}
+.logo-icon{width:32px;height:32px;background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.xp-pill{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber);font-family:var(--font-mono);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;}
+.streak-pill{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);font-family:var(--font-mono);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;}
+.nav-btn{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:var(--r);font-family:var(--font-body);font-size:13px;cursor:pointer;transition:all 0.15s;}
+.nav-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* MAIN */
+main{flex:1;padding:32px 24px;max-width:1100px;margin:0 auto;width:100%;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--r);font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;border:1px solid transparent;}
+.btn-primary{background:var(--green);color:#07090f;border-color:var(--green);}
+.btn-primary:hover{background:#00ffb3;box-shadow:0 0 20px rgba(0,229,160,0.3);}
+.btn-secondary{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
+.btn-secondary:hover{border-color:var(--green);color:var(--green);}
+.btn-outline{background:transparent;color:var(--green);border-color:var(--green-border);}
+.btn-outline:hover{background:var(--green-bg);}
+.btn-danger{background:var(--red-bg);color:var(--red);border-color:var(--red-border);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;}
+.card-hover{transition:border-color 0.2s,transform 0.15s;}
+.card-hover:hover{border-color:var(--green-border);transform:translateY(-2px);}
+
+/* TAGS */
+.tag{font-family:var(--font-mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.tag-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.tag-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);}
+.tag-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+.tag-purple{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border);}
+.tag-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+.tag-cyan{background:var(--cyan-bg);color:var(--cyan);border:1px solid var(--cyan-border);}
+
+/* PROGRESS BAR */
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:2px;transition:width 0.4s ease;}
+
+/* VIEWS */
+.view{display:none;animation:fadeUp 0.3s ease;}
+.view.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== DASHBOARD ===== */
+.hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:48px;margin-bottom:32px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;top:-40px;right:-40px;width:300px;height:300px;background:radial-gradient(circle,rgba(0,229,160,0.06) 0%,transparent 70%);pointer-events:none;}
+.hero-title{font-family:var(--font-display);font-size:clamp(32px,5vw,52px);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:16px;}
+.hero-title em{font-style:normal;color:var(--green);}
+.hero-sub{color:var(--text2);font-size:16px;margin-bottom:32px;max-width:520px;line-height:1.7;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-stat{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;color:var(--text3);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:32px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:20px;cursor:pointer;transition:all 0.2s;}
+.stat-card:hover{border-color:var(--green-border);background:var(--surface2);}
+.stat-label{font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.stat-value{font-size:28px;font-family:var(--font-display);font-weight:800;color:var(--text);}
+.stat-sub{font-size:12px;color:var(--text3);margin-top:4px;}
+
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px;}
+.quick-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:24px;cursor:pointer;transition:all 0.2s;}
+.quick-card:hover{border-color:var(--green-border);background:var(--surface2);transform:translateY(-3px);}
+.quick-icon{width:44px;height:44px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;}
+.quick-title{font-family:var(--font-display);font-size:18px;font-weight:800;margin-bottom:6px;}
+.quick-sub{font-size:13px;color:var(--text2);line-height:1.5;}
+
+.domain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+.domain-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:20px;display:flex;align-items:flex-start;gap:16px;}
+.domain-icon{width:40px;height:40px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.domain-name{font-weight:600;font-size:15px;margin-bottom:4px;}
+.domain-desc{font-size:12px;color:var(--text3);line-height:1.5;}
+.domain-weight{font-family:var(--font-mono);font-size:11px;font-weight:600;}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.section-title{font-family:var(--font-display);font-size:20px;font-weight:800;}
+
+/* ===== LESSON VIEW ===== */
+.lesson-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;}
+@media(max-width:700px){.lesson-layout{grid-template-columns:1fr;}}
+.lesson-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;position:sticky;top:72px;}
+.lesson-section-label{font-family:var(--font-mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:16px 16px 8px;}
+.lesson-tab{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all 0.15s;border-left:3px solid transparent;}
+.lesson-tab:hover{background:var(--surface2);color:var(--text);}
+.lesson-tab.active{background:var(--green-bg);color:var(--green);border-left-color:var(--green);}
+.lesson-divider{height:1px;background:var(--border);margin:8px 0;}
+
+.lesson-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:40px;}
+.lesson-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;}
+.lesson-title{font-family:var(--font-display);font-size:32px;font-weight:800;letter-spacing:-1px;}
+.lesson-intro{font-size:16px;color:var(--text2);line-height:1.7;margin-bottom:32px;}
+
+.cia-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+@media(max-width:600px){.cia-grid{grid-template-columns:1fr;}}
+.cia-card{border-radius:var(--r2);padding:24px;position:relative;overflow:hidden;}
+.cia-card ul{list-style:none;padding:0;}
+.cia-card ul li{font-size:12px;padding:3px 0;display:flex;align-items:center;gap:6px;}
+.cia-card ul li::before{content:'›';font-weight:700;}
+.cia-card h3{font-family:var(--font-display);font-size:18px;font-weight:800;margin-bottom:8px;}
+.cia-card p{font-size:12px;margin-bottom:12px;opacity:0.75;}
+
+.tip-box{display:flex;gap:14px;padding:16px 20px;border-radius:var(--r);margin-top:24px;}
+.tip-box.blue{background:var(--blue-bg);border:1px solid var(--blue-border);}
+.tip-box.amber{background:var(--amber-bg);border:1px solid var(--amber-border);}
+.tip-icon{font-size:18px;flex-shrink:0;margin-top:2px;}
+.tip-text{font-size:13px;line-height:1.6;}
+.tip-text strong{font-weight:600;}
+
+.numbered-list{display:flex;flex-direction:column;gap:12px;margin-top:24px;}
+.numbered-item{display:flex;gap:16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.num-badge{width:36px;height:36px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:16px;font-weight:800;flex-shrink:0;}
+.num-title{font-weight:600;font-size:15px;margin-bottom:4px;}
+.num-sub{font-size:13px;color:var(--text2);}
+
+.checklist{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
+.check-item{display:flex;gap:12px;font-size:14px;line-height:1.6;}
+.check-icon{color:var(--green);font-size:16px;flex-shrink:0;margin-top:2px;}
+
+.quote-block{background:var(--surface2);border-left:3px solid var(--green);border-radius:0 var(--r) var(--r) 0;padding:20px 24px;margin:24px 0;text-align:center;}
+.quote-block .quote-text{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.quote-block .quote-sub{font-size:12px;color:var(--text3);}
+
+.table-wrap{overflow-x:auto;margin-top:20px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--surface2);color:var(--text2);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);}
+td:first-child{color:var(--text);font-weight:500;}
+tr:hover td{background:var(--surface2);}
+tr:last-child td{border-bottom:none;}
+
+/* ===== FLASHCARD VIEW ===== */
+.fc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.fc-meta{font-family:var(--font-mono);font-size:12px;color:var(--green);background:var(--green-bg);border:1px solid var(--green-border);padding:5px 12px;border-radius:20px;}
+.fc-filter{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.fc-filter-btn{font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--font-mono);transition:all 0.15s;}
+.fc-filter-btn.active{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.card-scene{width:100%;max-width:640px;margin:0 auto;perspective:1200px;}
+.card-3d{width:100%;height:280px;position:relative;cursor:pointer;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;}
+.card-3d.flipped{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;border-radius:var(--r3);backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;}
+.card-front{background:var(--surface);border:1px solid var(--border2);}
+.card-back{background:linear-gradient(135deg,#0d1f2d,#0d1117);border:1px solid var(--green-border);transform:rotateY(180deg);}
+.card-term{font-family:var(--font-display);font-size:32px;font-weight:800;text-align:center;letter-spacing:-0.5px;}
+.card-hint{position:absolute;bottom:20px;font-size:12px;color:var(--text3);font-family:var(--font-mono);}
+.card-def{font-size:16px;text-align:center;line-height:1.7;color:var(--text);}
+.card-def em{font-style:normal;color:var(--green);font-weight:600;}
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:24px;}
+.fc-dot-row{display:flex;gap:5px;}
+.fc-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:all 0.2s;}
+.fc-dot.done{background:var(--green);}
+.fc-dot.current{background:var(--text);width:18px;border-radius:3px;}
+.fc-shortcut{text-align:center;font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-top:16px;}
+
+/* ===== QUIZ VIEW ===== */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.quiz-title{font-family:var(--font-display);font-size:22px;font-weight:800;}
+.quiz-counter{font-family:var(--font-mono);font-size:12px;color:var(--green);background:var(--green-bg);border:1px solid var(--green-border);padding:5px 12px;border-radius:20px;}
+.quiz-progress{margin-bottom:32px;}
+.quiz-domain-label{font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-top:8px;}
+.quiz-question{font-size:20px;font-weight:600;line-height:1.5;margin-bottom:28px;color:var(--text);}
+.quiz-options{display:flex;flex-direction:column;gap:10px;}
+.quiz-opt{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:var(--r);border:1px solid var(--border2);background:var(--surface2);cursor:pointer;transition:all 0.15s;text-align:left;width:100%;font-family:var(--font-body);font-size:15px;color:var(--text2);}
+.quiz-opt:hover:not(:disabled){border-color:var(--blue);color:var(--text);background:var(--blue-bg);}
+.quiz-opt:disabled{cursor:default;}
+.quiz-opt.correct{border-color:var(--green)!important;background:var(--green-bg)!important;color:var(--green)!important;}
+.quiz-opt.wrong{border-color:var(--red)!important;background:var(--red-bg)!important;color:var(--red)!important;}
+.quiz-opt.dimmed{opacity:0.3;border-color:var(--border)!important;}
+.opt-letter{width:28px;height:28px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:700;flex-shrink:0;transition:all 0.15s;}
+.quiz-opt.correct .opt-letter{background:var(--green);color:#07090f;}
+.quiz-opt.wrong .opt-letter{background:var(--red);color:#fff;}
+.explanation-box{margin-top:24px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--r2);padding:20px;animation:fadeUp 0.25s ease;}
+.exp-label{font-family:var(--font-mono);font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.exp-text{font-size:14px;color:var(--text2);line-height:1.7;}
+.quiz-footer{display:flex;justify-content:flex-end;margin-top:16px;}
+
+/* ===== RESULTS VIEW ===== */
+.results-center{text-align:center;padding:40px 20px;max-width:540px;margin:0 auto;}
+.results-badge{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:42px;margin:0 auto 24px;}
+.results-score{font-family:var(--font-display);font-size:64px;font-weight:800;line-height:1;}
+.results-label{font-size:18px;color:var(--text2);margin:8px 0 24px;}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;text-align:center;}
+.results-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:16px;}
+.results-stat .val{font-family:var(--font-display);font-size:28px;font-weight:800;}
+.results-stat .lbl{font-size:11px;color:var(--text3);font-family:var(--font-mono);}
+.results-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.results-breakdown{margin-top:24px;text-align:left;}
+.breakdown-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:var(--r);font-size:13px;margin-bottom:6px;}
+.breakdown-item.correct-item{background:var(--green-bg);border:1px solid var(--green-border);}
+.breakdown-item.wrong-item{background:var(--red-bg);border:1px solid var(--red-border);}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="navigate('dashboard')">
+    <div class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    Sec<span>+</span> Lab
+  </div>
+  <div class="nav-right">
+    <div class="xp-pill" id="xp-pill">⚡ 0 XP</div>
+    <div class="streak-pill" id="streak-pill">🔥 0 day streak</div>
+    <button class="nav-btn" onclick="navigate('dashboard')">Dashboard</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+<!-- DASHBOARD -->
+<div class="view active" id="view-dashboard">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="tag tag-green" style="margin-bottom:20px;">SY0-701 Aligned</div>
+    <h1 class="hero-title">Master the<br><em>Security+</em> Exam</h1>
+    <p class="hero-sub">Interactive lessons, flashcards, and timed practice quizzes built around the SY0-701 exam domains. Build real skills, not just test memory.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="navigate('lesson')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Start Learning
+      </button>
+      <button class="btn btn-secondary" onclick="navigate('quiz')">Take Practice Quiz</button>
+      <button class="btn btn-outline" onclick="navigate('flashcards')">Flashcards</button>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card" onclick="navigate('quiz')">
+      <div class="stat-label">Best Quiz Score</div>
+      <div class="stat-value" id="dash-score">—</div>
+      <div class="stat-sub">Target: 80%+ to pass</div>
+    </div>
+    <div class="stat-card" onclick="navigate('flashcards')">
+      <div class="stat-label">Cards Studied</div>
+      <div class="stat-value" id="dash-cards">0</div>
+      <div class="stat-sub">of 16 total cards</div>
+    </div>
+    <div class="stat-card" onclick="navigate('lesson')">
+      <div class="stat-label">Lessons Completed</div>
+      <div class="stat-value" id="dash-lessons">0</div>
+      <div class="stat-sub">of 8 topics</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total XP Earned</div>
+      <div class="stat-value" id="dash-xp">0</div>
+      <div class="stat-sub">Keep studying to earn more</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    <span class="section-title">Study Modes</span>
+  </div>
+  <div class="quick-grid" style="margin-bottom:32px;">
+    <div class="quick-card" onclick="navigate('lesson')">
+      <div class="quick-icon" style="background:var(--blue-bg);">📖</div>
+      <div class="quick-title">Interactive Lessons</div>
+      <div class="quick-sub">Deep-dive into all four exam domains with structured notes and exam tips.</div>
+    </div>
+    <div class="quick-card" onclick="navigate('flashcards')">
+      <div class="quick-icon" style="background:var(--purple-bg);">🃏</div>
+      <div class="quick-title">Flashcard Deck</div>
+      <div class="quick-sub">16 key terms and definitions. Filter by domain. Keyboard shortcuts supported.</div>
+    </div>
+    <div class="quick-card" onclick="navigate('quiz')">
+      <div class="quick-icon" style="background:var(--red-bg);">🧪</div>
+      <div class="quick-title">Knowledge Check</div>
+      <div class="quick-sub">12 practice questions with instant scoring, explanations, and a full breakdown.</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    <span class="section-title">Exam Domains (SY0-701)</span>
+  </div>
+  <div class="domain-grid">
+    <div class="domain-card" style="border-color:var(--blue-border);">
+      <div class="domain-icon" style="background:var(--blue-bg);">🛡️</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div class="domain-name">General Security Concepts</div>
+          <span class="tag tag-blue domain-weight">12%</span>
+        </div>
+        <div class="domain-desc">CIA Triad, AAA, Zero Trust, cryptographic concepts, and authentication methods.</div>
+      </div>
+    </div>
+    <div class="domain-card" style="border-color:var(--red-border);">
+      <div class="domain-icon" style="background:var(--red-bg);">⚠️</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div class="domain-name">Threats, Vulnerabilities & Mitigations</div>
+          <span class="tag tag-red domain-weight">22%</span>
+        </div>
+        <div class="domain-desc">Malware, social engineering, DDoS, vulnerability scanning, and threat intelligence.</div>
+      </div>
+    </div>
+    <div class="domain-card" style="border-color:var(--purple-border);">
+      <div class="domain-icon" style="background:var(--purple-bg);">🏗️</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div class="domain-name">Security Architecture</div>
+          <span class="tag tag-purple domain-weight">18%</span>
+        </div>
+        <div class="domain-desc">Cloud security models, network segmentation, secure app development, and PKI.</div>
+      </div>
+    </div>
+    <div class="domain-card" style="border-color:var(--green-border);">
+      <div class="domain-icon" style="background:var(--green-bg);">⚙️</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div class="domain-name">Security Operations</div>
+          <span class="tag tag-green domain-weight">28%</span>
+        </div>
+        <div class="domain-desc">Incident response, SIEM, identity & access management, endpoint security.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LESSON VIEW -->
+<div class="view" id="view-lesson">
+  <div class="lesson-layout">
+    <div class="lesson-sidebar">
+      <div class="lesson-section-label">Domain 1 · General</div>
+      <div class="lesson-tab active" data-tab="cia" onclick="switchLesson(this,'cia')">🔒 The CIA Triad</div>
+      <div class="lesson-tab" data-tab="aaa" onclick="switchLesson(this,'aaa')">🔐 AAA Framework</div>
+      <div class="lesson-tab" data-tab="zerotrust" onclick="switchLesson(this,'zerotrust')">⛔ Zero Trust</div>
+      <div class="lesson-tab" data-tab="crypto" onclick="switchLesson(this,'crypto')">🔑 Cryptography</div>
+      <div class="lesson-divider"></div>
+      <div class="lesson-section-label">Domain 2 · Threats</div>
+      <div class="lesson-tab" data-tab="malware" onclick="switchLesson(this,'malware')">🦠 Malware Types</div>
+      <div class="lesson-tab" data-tab="social" onclick="switchLesson(this,'social')">🎭 Social Engineering</div>
+      <div class="lesson-divider"></div>
+      <div class="lesson-section-label">Domain 4 · Operations</div>
+      <div class="lesson-tab" data-tab="ir" onclick="switchLesson(this,'ir')">🚨 Incident Response</div>
+      <div class="lesson-tab" data-tab="siem" onclick="switchLesson(this,'siem')">📊 SIEM & Monitoring</div>
+    </div>
+
+    <div class="lesson-content" id="lesson-content">
+      <!-- injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- FLASHCARD VIEW -->
+<div class="view" id="view-flashcards">
+  <div class="fc-header">
+    <h2 style="font-family:var(--font-display);font-size:24px;font-weight:800;">Terminology Deck</h2>
+    <div class="fc-meta" id="fc-counter">Card 1 of 16</div>
+  </div>
+  <div class="fc-filter" id="fc-filter">
+    <button class="fc-filter-btn active" onclick="filterCards(this,'all')">All Domains</button>
+    <button class="fc-filter-btn" onclick="filterCards(this,'domain1')">Domain 1</button>
+    <button class="fc-filter-btn" onclick="filterCards(this,'domain2')">Domain 2</button>
+    <button class="fc-filter-btn" onclick="filterCards(this,'domain3')">Domain 3</button>
+    <button class="fc-filter-btn" onclick="filterCards(this,'domain4')">Domain 4</button>
+  </div>
+  <div class="card-scene">
+    <div class="card-3d" id="card-3d" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div id="fc-term" class="card-term">Loading...</div>
+        <div class="card-hint">[ space ] or click to flip</div>
+      </div>
+      <div class="card-face card-back">
+        <div id="fc-def" class="card-def">Definition here</div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-dot-row" id="fc-dots" style="justify-content:center;margin-top:20px;display:flex;"></div>
+  <div class="fc-nav" style="margin-top:16px;">
+    <button class="btn btn-secondary" onclick="prevCard()">← Previous</button>
+    <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+  </div>
+  <div class="fc-shortcut">Keyboard: ← → arrow keys to navigate · space to flip</div>
+</div>
+
+<!-- QUIZ VIEW -->
+<div class="view" id="view-quiz">
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="quiz-header">
+      <div class="quiz-title">Knowledge Check</div>
+      <div class="quiz-counter" id="quiz-counter">1 / 12</div>
+    </div>
+    <div class="quiz-progress">
+      <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill" style="width:8%"></div></div>
+      <div class="quiz-domain-label" id="quiz-domain-label">Domain 1 · General Security Concepts</div>
+    </div>
+    <div class="card" style="padding:32px;" id="quiz-card">
+      <div class="quiz-question" id="quiz-question"></div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div id="quiz-explanation"></div>
+      <div class="quiz-footer" id="quiz-footer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS VIEW -->
+<div class="view" id="view-results">
+  <div class="results-center">
+    <div class="results-badge" id="results-badge"></div>
+    <div class="results-score" id="results-score"></div>
+    <div class="results-label" id="results-label"></div>
+    <div class="results-grid">
+      <div class="results-stat"><div class="val" id="res-correct"></div><div class="lbl">Correct</div></div>
+      <div class="results-stat"><div class="val" id="res-wrong"></div><div class="lbl">Incorrect</div></div>
+      <div class="results-stat"><div class="val" id="res-xp"></div><div class="lbl">XP Earned</div></div>
+      <div class="results-stat"><div class="val" id="res-time"></div><div class="lbl">Time Taken</div></div>
+    </div>
+    <div class="results-actions">
+      <button class="btn btn-outline" onclick="restartQuiz()">↩ Retake Quiz</button>
+      <button class="btn btn-primary" onclick="navigate('dashboard')">Dashboard</button>
+    </div>
+    <div class="results-breakdown" id="results-breakdown"></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ======== DATA ========
+
+const LESSONS = {
+  cia: {
+    title:'The CIA Triad',domain:'Domain 1 · General Security Concepts',icon:'🛡️',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-blue" style="margin-bottom:10px;display:inline-block;">Domain 1</span><h2 class="lesson-title">The CIA Triad</h2></div><span style="font-size:32px;">🛡️</span></div>
+      <p class="lesson-intro">The CIA Triad is the foundational model of information security. Every security control and policy maps back to one or more of its three pillars.</p>
+      <div class="cia-grid">
+        <div class="cia-card" style="background:var(--blue-bg);border:1px solid var(--blue-border);">
+          <h3 style="color:var(--blue);">Confidentiality</h3>
+          <p style="color:var(--blue);">Preventing unauthorized disclosure of information.</p>
+          <ul style="color:var(--text2);">
+            <li>Encryption (AES, TLS)</li><li>Access Controls & ACLs</li><li>Data Classification</li><li>Steganography</li>
+          </ul>
+        </div>
+        <div class="cia-card" style="background:var(--green-bg);border:1px solid var(--green-border);">
+          <h3 style="color:var(--green);">Integrity</h3>
+          <p style="color:var(--green);">Ensuring data has not been altered or tampered with.</p>
+          <ul style="color:var(--text2);">
+            <li>Hashing (SHA-256, MD5)</li><li>Digital Signatures</li><li>PKI Certificates</li><li>Version Control</li>
+          </ul>
+        </div>
+        <div class="cia-card" style="background:var(--red-bg);border:1px solid var(--red-border);">
+          <h3 style="color:var(--red);">Availability</h3>
+          <p style="color:var(--red);">Ensuring timely, reliable access to systems and data.</p>
+          <ul style="color:var(--text2);">
+            <li>Redundancy / RAID</li><li>Backups & DR Plans</li><li>Load Balancing</li><li>DDoS Mitigation</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tip-box blue"><div class="tip-icon">💡</div><div class="tip-text"><strong>Exam Tip:</strong> "Preventing unauthorized <em>viewing</em>" = Confidentiality (encryption). "Preventing unauthorized <em>changes</em>" = Integrity (hashing). "Keeping systems <em>online</em>" = Availability.</div></div>
+      <div class="tip-box amber" style="margin-top:12px;"><div class="tip-icon">⚠️</div><div class="tip-text"><strong>Related Concept — Non-Repudiation:</strong> Often tested alongside CIA. It means a user cannot deny performing an action. Achieved via digital signatures and audit logs.</div></div>
+    `
+  },
+  aaa:{
+    title:'AAA Framework',domain:'Domain 1 · General Security Concepts',icon:'🔐',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-blue" style="margin-bottom:10px;display:inline-block;">Domain 1</span><h2 class="lesson-title">AAA Framework</h2></div><span style="font-size:32px;">🔐</span></div>
+      <p class="lesson-intro">AAA (Authentication, Authorization, Accounting) is the framework for controlling access to computer resources, enforcing policies, and auditing usage. RADIUS and TACACS+ are the primary AAA protocols.</p>
+      <div class="numbered-list">
+        <div class="numbered-item"><div class="num-badge" style="background:var(--purple-bg);color:var(--purple);">1</div><div><div class="num-title">Authentication — Who are you?</div><div class="num-sub">Verifies identity using: passwords (something you know), smart cards (something you have), biometrics (something you are), or MFA combining multiple factors.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--purple-bg);color:var(--purple);">2</div><div><div class="num-title">Authorization — What can you do?</div><div class="num-sub">Determines permission level. Methods include RBAC (Role-Based), ABAC (Attribute-Based), MAC (Mandatory), DAC (Discretionary). Principle of Least Privilege applies here.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--purple-bg);color:var(--purple);">3</div><div><div class="num-title">Accounting — What did you do?</div><div class="num-sub">Tracks and logs all user activity for audit trails, billing, and forensic investigation. SIEM systems aggregate these logs for analysis.</div></div></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Protocol</th><th>Port</th><th>Transport</th><th>Encrypts</th><th>Use Case</th></tr></thead><tbody>
+        <tr><td>RADIUS</td><td>1812/1813</td><td>UDP</td><td>Password only</td><td>Network access, Wi-Fi auth</td></tr>
+        <tr><td>TACACS+</td><td>49</td><td>TCP</td><td>Full payload</td><td>Device administration, Cisco</td></tr>
+        <tr><td>Diameter</td><td>3868</td><td>TCP/SCTP</td><td>Full payload</td><td>Mobile networks, successor to RADIUS</td></tr>
+      </tbody></table></div>
+      <div class="tip-box blue" style="margin-top:20px;"><div class="tip-icon">💡</div><div class="tip-text"><strong>Exam Tip:</strong> TACACS+ encrypts the <em>entire</em> packet (not just password). RADIUS only encrypts the password. TACACS+ uses TCP (reliable); RADIUS uses UDP (faster).</div></div>
+    `
+  },
+  zerotrust:{
+    title:'Zero Trust Architecture',domain:'Domain 1 · General Security Concepts',icon:'⛔',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-blue" style="margin-bottom:10px;display:inline-block;">Domain 1</span><h2 class="lesson-title">Zero Trust Architecture</h2></div><span style="font-size:32px;">⛔</span></div>
+      <p class="lesson-intro">Zero Trust eliminates the idea of a trusted internal network. Every request is treated as potentially hostile, requiring continuous validation regardless of origin.</p>
+      <div class="quote-block"><div class="quote-text">"Never Trust, Always Verify"</div><div class="quote-sub">The Zero Trust core principle — no implicit trust based on network location</div></div>
+      <h3 style="font-size:17px;font-weight:700;margin-bottom:16px;">Core Pillars</h3>
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Verify Explicitly</strong> — Authenticate and authorize using identity, location, device health, service, and data classification. Never assume.</div></div>
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Least Privilege Access</strong> — Apply JIT (Just-In-Time) and JEA (Just-Enough-Access). Limit lateral movement with micro-segmentation.</div></div>
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Assume Breach</strong> — Design as if attackers are already inside. End-to-end encryption, continuous monitoring, and small blast radius segments.</div></div>
+      </div>
+      <div class="table-wrap" style="margin-top:24px;"><table><thead><tr><th>Traditional Perimeter</th><th>Zero Trust</th></tr></thead><tbody>
+        <tr><td>Trust inside the network</td><td>Never trust by default</td></tr>
+        <tr><td>Perimeter firewall = security</td><td>Identity is the new perimeter</td></tr>
+        <tr><td>VPN grants broad access</td><td>Per-app, per-session access</td></tr>
+        <tr><td>Flat internal network</td><td>Micro-segmented zones</td></tr>
+      </tbody></table></div>
+    `
+  },
+  crypto:{
+    title:'Cryptography Basics',domain:'Domain 1 · General Security Concepts',icon:'🔑',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-blue" style="margin-bottom:10px;display:inline-block;">Domain 1</span><h2 class="lesson-title">Cryptography Basics</h2></div><span style="font-size:32px;">🔑</span></div>
+      <p class="lesson-intro">Cryptography is the backbone of security — it provides confidentiality, integrity, authentication, and non-repudiation. The exam tests both concepts and specific algorithm names.</p>
+      <div class="table-wrap"><table><thead><tr><th>Type</th><th>Key Model</th><th>Speed</th><th>Use Case</th><th>Examples</th></tr></thead><tbody>
+        <tr><td>Symmetric</td><td>Same key encrypt/decrypt</td><td>Fast</td><td>Bulk data encryption</td><td>AES, 3DES, ChaCha20</td></tr>
+        <tr><td>Asymmetric</td><td>Public/Private key pair</td><td>Slow</td><td>Key exchange, signatures</td><td>RSA, ECC, Diffie-Hellman</td></tr>
+        <tr><td>Hashing</td><td>One-way, no key</td><td>Very Fast</td><td>Integrity verification</td><td>SHA-256, SHA-3, MD5*</td></tr>
+      </tbody></table></div>
+      <div class="numbered-list" style="margin-top:24px;">
+        <div class="numbered-item"><div class="num-badge" style="background:var(--amber-bg);color:var(--amber);">⚡</div><div><div class="num-title">AES (Advanced Encryption Standard)</div><div class="num-sub">The gold standard for symmetric encryption. Uses 128, 192, or 256-bit keys. AES-256 is the most secure. Used for disk encryption (BitLocker) and file encryption.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--amber-bg);color:var(--amber);">⚡</div><div><div class="num-title">RSA (Rivest–Shamir–Adleman)</div><div class="num-sub">Dominant asymmetric algorithm. Key size of 2048+ bits recommended. Used for TLS handshakes and digital signatures. Slow — used to exchange symmetric keys, not bulk encrypt.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--amber-bg);color:var(--amber);">⚡</div><div><div class="num-title">SHA-256 / SHA-3 (Hashing)</div><div class="num-sub">Produces a fixed-length digest. SHA-256 outputs 256 bits. Used to verify file integrity. MD5 and SHA-1 are <em>deprecated</em> — considered broken for security use.</div></div></div>
+      </div>
+      <div class="tip-box blue" style="margin-top:20px;"><div class="tip-icon">💡</div><div class="tip-text"><strong>Exam Tip:</strong> When a question asks what ensures data was NOT modified in transit, the answer is a hash (integrity). Symmetric = fast = bulk. Asymmetric = slow = key exchange and signatures.</div></div>
+    `
+  },
+  malware:{
+    title:'Malware Types',domain:'Domain 2 · Threats & Vulnerabilities',icon:'🦠',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-red" style="margin-bottom:10px;display:inline-block;">Domain 2</span><h2 class="lesson-title">Malware Types</h2></div><span style="font-size:32px;">🦠</span></div>
+      <p class="lesson-intro">Malware is any software intentionally designed to cause damage. The Security+ exam heavily tests your ability to identify malware types from scenario descriptions.</p>
+      <div class="table-wrap"><table><thead><tr><th>Type</th><th>How It Spreads</th><th>Key Trait</th><th>Example</th></tr></thead><tbody>
+        <tr><td>Virus</td><td>Attaches to host file</td><td>Requires user action to spread</td><td>ILOVEYOU</td></tr>
+        <tr><td>Worm</td><td>Self-replicates over network</td><td>No host file needed; spreads automatically</td><td>WannaCry, Stuxnet</td></tr>
+        <tr><td>Trojan</td><td>Disguised as legitimate software</td><td>Opens a backdoor; doesn't self-replicate</td><td>RATs, Banking Trojans</td></tr>
+        <tr><td>Ransomware</td><td>Phishing / exploits</td><td>Encrypts files, demands payment</td><td>REvil, LockBit</td></tr>
+        <tr><td>Rootkit</td><td>Exploits, trojans</td><td>Hides its presence at kernel level</td><td>Azazel</td></tr>
+        <tr><td>Spyware</td><td>Bundled software</td><td>Silently collects data/keystrokes</td><td>FinFisher</td></tr>
+        <tr><td>Adware</td><td>Bundled software</td><td>Displays unwanted ads; often grayware</td><td>—</td></tr>
+        <tr><td>Botnet</td><td>Various vectors</td><td>Command-and-control (C2) network of zombies</td><td>Mirai</td></tr>
+      </tbody></table></div>
+      <div class="tip-box amber" style="margin-top:20px;"><div class="tip-icon">⚠️</div><div class="tip-text"><strong>Key Distinction:</strong> A Worm spreads <em>automatically</em> with no user action. A Virus requires a user to execute the infected file. A Trojan disguises itself — but doesn't self-replicate. Rootkits are the hardest to detect and remove.</div></div>
+    `
+  },
+  social:{
+    title:'Social Engineering',domain:'Domain 2 · Threats & Vulnerabilities',icon:'🎭',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-red" style="margin-bottom:10px;display:inline-block;">Domain 2</span><h2 class="lesson-title">Social Engineering</h2></div><span style="font-size:32px;">🎭</span></div>
+      <p class="lesson-intro">Social engineering exploits human psychology rather than technical vulnerabilities. It is consistently one of the most effective attack vectors and heavily tested on the exam.</p>
+      <div class="numbered-list">
+        <div class="numbered-item"><div class="num-badge" style="background:var(--red-bg);color:var(--red);">🎣</div><div><div class="num-title">Phishing</div><div class="num-sub">Mass emails impersonating a trusted entity to steal credentials or deliver malware. <strong>Spear phishing</strong> = targeted at a specific person. <strong>Whaling</strong> = targeted at executives.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--red-bg);color:var(--red);">📞</div><div><div class="num-title">Vishing / Smishing</div><div class="num-sub"><strong>Vishing</strong> = Voice phishing (phone calls impersonating IT support, IRS, etc). <strong>Smishing</strong> = SMS-based phishing. Both use urgency and authority to bypass critical thinking.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--red-bg);color:var(--red);">🎭</div><div><div class="num-title">Pretexting</div><div class="num-sub">Creating a fabricated scenario (pretext) to gain the victim's trust. Example: impersonating an IT technician to get a password over the phone.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--red-bg);color:var(--red);">🚪</div><div><div class="num-title">Tailgating / Piggybacking</div><div class="num-sub">Physically following an authorized user through a secure door without authentication. Piggybacking is done with the victim's knowledge; tailgating is without.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--red-bg);color:var(--red);">🗑️</div><div><div class="num-title">Dumpster Diving</div><div class="num-sub">Searching discarded materials (documents, drives) for sensitive information. Mitigated by shredding policies and degaussing.</div></div></div>
+      </div>
+      <div class="tip-box blue" style="margin-top:20px;"><div class="tip-icon">💡</div><div class="tip-text"><strong>Exam Tip:</strong> All social engineering attacks rely on psychological principles: Authority, Urgency, Scarcity, Social proof, Likability, and Reciprocity. If a scenario describes manipulation rather than a technical exploit, think social engineering.</div></div>
+    `
+  },
+  ir:{
+    title:'Incident Response',domain:'Domain 4 · Security Operations',icon:'🚨',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-green" style="margin-bottom:10px;display:inline-block;">Domain 4</span><h2 class="lesson-title">Incident Response</h2></div><span style="font-size:32px;">🚨</span></div>
+      <p class="lesson-intro">Incident Response (IR) is the structured process of detecting, containing, and recovering from security incidents. The NIST SP 800-61 framework defines the standard lifecycle.</p>
+      <div class="numbered-list">
+        <div class="numbered-item"><div class="num-badge" style="background:var(--green-bg);color:var(--green);">1</div><div><div class="num-title">Preparation</div><div class="num-sub">Establish IR policies, response team (CIRT), playbooks, communication plans, and tool kits before an incident occurs.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--green-bg);color:var(--green);">2</div><div><div class="num-title">Detection & Analysis</div><div class="num-sub">Identify and validate the incident using alerts, logs, IDS/IPS, SIEM. Determine scope, severity, and affected systems.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--green-bg);color:var(--green);">3</div><div><div class="num-title">Containment</div><div class="num-sub"><strong>Short-term:</strong> Isolate affected systems immediately. <strong>Long-term:</strong> Implement a more robust containment strategy that doesn't destroy forensic evidence.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--green-bg);color:var(--green);">4</div><div><div class="num-title">Eradication</div><div class="num-sub">Remove the root cause: delete malware, patch the exploited vulnerability, remediate misconfigurations, and reset compromised credentials.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--green-bg);color:var(--green);">5</div><div><div class="num-title">Recovery</div><div class="num-sub">Restore systems to normal operations from clean backups. Monitor closely post-recovery for re-infection or persistence mechanisms.</div></div></div>
+        <div class="numbered-item"><div class="num-badge" style="background:var(--green-bg);color:var(--green);">6</div><div><div class="num-title">Lessons Learned</div><div class="num-sub">Post-incident review (PIR / blameless postmortem). Document findings, update playbooks, and improve defenses. Complete within 2 weeks of resolution.</div></div></div>
+      </div>
+      <div class="tip-box blue" style="margin-top:20px;"><div class="tip-icon">💡</div><div class="tip-text"><strong>Exam Tip:</strong> The NIST IR phases in order: Preparation → Detection & Analysis → Containment → Eradication → Recovery → Lessons Learned. A common distractor swaps Eradication and Containment — containment always comes first.</div></div>
+    `
+  },
+  siem:{
+    title:'SIEM & Monitoring',domain:'Domain 4 · Security Operations',icon:'📊',
+    render:()=>`
+      <div class="lesson-header"><div><span class="tag tag-green" style="margin-bottom:10px;display:inline-block;">Domain 4</span><h2 class="lesson-title">SIEM & Security Monitoring</h2></div><span style="font-size:32px;">📊</span></div>
+      <p class="lesson-intro">A SIEM (Security Information and Event Management) system aggregates, correlates, and analyzes log data from across the network to detect threats in real time and support forensic investigation.</p>
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Log Aggregation</strong> — Collects logs from firewalls, servers, endpoints, cloud services, and IDS/IPS into a central repository.</div></div>
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Correlation</strong> — Applies rules to find patterns across multiple log sources that individually look benign but together indicate an attack.</div></div>
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Alerting</strong> — Triggers alarms when correlation rules are matched. Feeds into the SOC analyst's workflow.</div></div>
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Dashboards & Reporting</strong> — Provides visualization for real-time threat status, compliance reporting (PCI-DSS, HIPAA), and executive summaries.</div></div>
+        <div class="check-item"><div class="check-icon">✓</div><div><strong>Forensics & Retention</strong> — Long-term log storage enables investigation of incidents that occurred weeks or months ago.</div></div>
+      </div>
+      <div class="table-wrap" style="margin-top:24px;"><table><thead><tr><th>Tool/Concept</th><th>Function</th></tr></thead><tbody>
+        <tr><td>Splunk / IBM QRadar</td><td>Enterprise SIEM platforms</td></tr>
+        <tr><td>IDS (Intrusion Detection)</td><td>Detects and alerts on suspicious traffic</td></tr>
+        <tr><td>IPS (Intrusion Prevention)</td><td>Detects AND blocks suspicious traffic inline</td></tr>
+        <tr><td>UEBA</td><td>User & Entity Behavior Analytics — detects anomalies in user behavior</td></tr>
+        <tr><td>SOAR</td><td>Security Orchestration, Automation & Response — automates IR workflows</td></tr>
+      </tbody></table></div>
+      <div class="tip-box amber" style="margin-top:20px;"><div class="tip-icon">⚠️</div><div class="tip-text"><strong>IDS vs IPS:</strong> An IDS is <em>passive</em> — it only alerts. An IPS is <em>active</em> — it blocks. IPS sits inline with traffic; IDS monitors a copy (SPAN/mirror port). A false positive in an IPS blocks legitimate traffic — a critical operational concern.</div></div>
+    `
+  }
+};
+
+const FLASHCARDS = [
+  {term:'Confidentiality',def:'Preventing unauthorized disclosure of information. Achieved via <em>encryption</em>, access controls, and data classification.',domain:'domain1'},
+  {term:'Integrity',def:'Ensuring data has not been altered or tampered with. Achieved via <em>hashing</em> (SHA-256) and digital signatures.',domain:'domain1'},
+  {term:'Availability',def:'Ensuring systems and data are accessible when needed. Supported by <em>redundancy, backups, and DDoS mitigation</em>.',domain:'domain1'},
+  {term:'Zero Trust',def:'"Never Trust, Always Verify." No implicit trust based on network location — every request is authenticated and authorized.',domain:'domain1'},
+  {term:'MFA',def:'Multi-Factor Authentication. Combines something you <em>know</em> (password), <em>have</em> (token), and <em>are</em> (biometrics).',domain:'domain1'},
+  {term:'Asymmetric Encryption',def:'Uses a public/private key pair. Public key encrypts; private key decrypts. Examples: <em>RSA, ECC</em>. Slower than symmetric.',domain:'domain1'},
+  {term:'Hashing',def:'A one-way function producing a fixed-length digest. Used for <em>integrity checks</em>. SHA-256 is the current standard.',domain:'domain1'},
+  {term:'Phishing',def:'Social engineering attack using deceptive emails to steal credentials. Spear phishing = targeted; Whaling = targeting executives.',domain:'domain2'},
+  {term:'Ransomware',def:'Malware that encrypts files and demands payment for the decryption key. Example: <em>WannaCry, REvil</em>.',domain:'domain2'},
+  {term:'Worm',def:'Self-replicating malware that spreads <em>automatically</em> across networks without user interaction. Example: <em>Stuxnet</em>.',domain:'domain2'},
+  {term:'Rootkit',def:'Malware that hides itself at the kernel or OS level, making it extremely difficult to detect. Often requires offline scanning to remove.',domain:'domain2'},
+  {term:'DLP',def:'Data Loss Prevention. Tools and policies designed to prevent unauthorized transfer or exfiltration of sensitive data.',domain:'domain3'},
+  {term:'PKI',def:'Public Key Infrastructure. A framework of CAs, certificates, and policies that manage digital certificates and public-key encryption.',domain:'domain3'},
+  {term:'SIEM',def:'Security Information and Event Management. Aggregates and <em>correlates</em> logs from across the environment to detect threats in real time.',domain:'domain4'},
+  {term:'Incident Response',def:'The structured NIST process: Preparation → Detection → Containment → Eradication → Recovery → Lessons Learned.',domain:'domain4'},
+  {term:'Least Privilege',def:'Users and systems should have only the <em>minimum</em> permissions required to perform their function. Core principle of Zero Trust and IAM.',domain:'domain4'},
+];
+
+const QUIZ = [
+  {q:"Which component of the CIA Triad is MOST directly addressed by using SHA-256 to verify a downloaded file?",opts:["Confidentiality","Availability","Integrity","Non-Repudiation"],ans:2,exp:"Hashing produces a fixed digest used to verify a file hasn't been altered — this is Integrity. If the hash matches the original, the data is unchanged.",domain:"Domain 1 · General Security Concepts"},
+  {q:"A user receives an email appearing to be from their bank asking them to click a link and verify their password. What attack is this?",opts:["Ransomware","Phishing","SQL Injection","Tailgating"],ans:1,exp:"Phishing masquerades as a trusted entity via email to steal credentials. Spear phishing is targeted; whaling targets executives specifically.",domain:"Domain 2 · Threats"},
+  {q:"Which authentication factor represents 'something you are'?",opts:["A smart card","An SMS one-time code","A fingerprint scan","A complex password"],ans:2,exp:"Biometrics (fingerprint, iris, face) = 'something you are'. Smart card = 'something you have'. Password = 'something you know'. SMS = 'something you have'.",domain:"Domain 1 · General Security Concepts"},
+  {q:"What is the PRIMARY purpose of a SIEM system?",opts:["Encrypt data at rest","Aggregate logs and provide real-time security analysis","Block malicious websites","Provide physical security"],ans:1,exp:"SIEM aggregates and correlates logs from many sources to detect anomalies. It does not encrypt data or physically secure infrastructure.",domain:"Domain 4 · Operations"},
+  {q:"A worm is distinct from a virus because a worm:",opts:["Requires a host file to execute","Disguises itself as legitimate software","Self-replicates automatically without user interaction","Encrypts victim files for ransom"],ans:2,exp:"Worms self-replicate across networks without requiring user action or a host file. Viruses attach to host files and require the user to run the infected file.",domain:"Domain 2 · Threats"},
+  {q:"Which Zero Trust principle states that users should be given only the access they need to do their job?",opts:["Assume Breach","Verify Explicitly","Least Privilege Access","Defense in Depth"],ans:2,exp:"Least Privilege (JIT/JEA) is the second Zero Trust pillar — limit access to the minimum needed, reducing blast radius if an account is compromised.",domain:"Domain 1 · General Security Concepts"},
+  {q:"During an incident response, which phase comes IMMEDIATELY after Containment?",opts:["Preparation","Detection & Analysis","Eradication","Lessons Learned"],ans:2,exp:"The NIST IR order is: Preparation → Detection → Containment → Eradication → Recovery → Lessons Learned. Eradication (removing root cause) follows Containment.",domain:"Domain 4 · Operations"},
+  {q:"Which type of cryptography uses the SAME key for both encryption and decryption?",opts:["Asymmetric","Hashing","Symmetric","PKI"],ans:2,exp:"Symmetric encryption (AES, 3DES) uses one shared key for both operations. It is fast, making it ideal for bulk data encryption. The challenge is secure key distribution.",domain:"Domain 1 · General Security Concepts"},
+  {q:"An attacker calls the help desk impersonating a senior executive to reset their password. What attack type is this?",opts:["Phishing","Vishing","Pretexting","Tailgating"],ans:2,exp:"Pretexting involves creating a fabricated scenario (pretext) to gain trust and manipulate someone. The attacker built a false identity context to trick the help desk.",domain:"Domain 2 · Threats"},
+  {q:"Which of the following BEST describes the difference between an IDS and an IPS?",opts:["IDS is software; IPS is hardware","IDS actively blocks traffic; IPS only alerts","IDS only alerts on threats; IPS actively blocks them","IDS operates at layer 7; IPS operates at layer 3"],ans:2,exp:"IDS (Intrusion Detection System) is passive — it alerts. IPS (Intrusion Prevention System) is active — it sits inline and blocks malicious traffic in real time.",domain:"Domain 4 · Operations"},
+  {q:"Which protocol provides AAA services and encrypts the ENTIRE packet payload, commonly used for Cisco device administration?",opts:["RADIUS","Kerberos","TACACS+","LDAP"],ans:2,exp:"TACACS+ encrypts the full packet payload (not just the password) and uses TCP port 49. It is preferred for device administration. RADIUS encrypts only the password and uses UDP.",domain:"Domain 1 · General Security Concepts"},
+  {q:"A security analyst notices that a recently installed legitimate software package is communicating with an external IP. What malware type BEST describes this behavior?",opts:["Worm","Virus","Trojan","Rootkit"],ans:2,exp:"A Trojan disguises itself as legitimate software while secretly performing malicious actions (like opening a backdoor). Unlike a worm, it does not self-replicate.",domain:"Domain 2 · Threats"},
+];
+
+// ======== STATE ========
+
+const state = {
+  xp: 0, streak: 0, lessonsRead: new Set(), bestScore: null, cardsStudied: new Set(),
+  fc: { filtered: [...FLASHCARDS], index: 0, flipped: false },
+  quiz: { index: 0, score: 0, answers: [], startTime: null, finished: false }
+};
+
+// ======== NAV ========
+
+function navigate(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  if (view === 'lesson') renderLesson('cia');
+  if (view === 'quiz') startQuiz();
+  if (view === 'flashcards') renderCard();
+  if (view === 'dashboard') updateDash();
+  window.scrollTo(0,0);
+}
+
+// ======== XP ========
+
+function addXP(amount) {
+  state.xp += amount;
+  document.getElementById('xp-pill').textContent = '⚡ ' + state.xp + ' XP';
+  document.getElementById('dash-xp').textContent = state.xp;
+}
+
+function updateDash() {
+  document.getElementById('dash-score').textContent = state.bestScore !== null ? state.bestScore + '%' : '—';
+  document.getElementById('dash-cards').textContent = state.cardsStudied.size;
+  document.getElementById('dash-lessons').textContent = state.lessonsRead.size;
+  document.getElementById('dash-xp').textContent = state.xp;
+}
+
+// ======== LESSONS ========
+
+let currentLesson = 'cia';
+function renderLesson(key) {
+  currentLesson = key;
+  const lesson = LESSONS[key];
+  document.getElementById('lesson-content').innerHTML = lesson.render();
+  if (!state.lessonsRead.has(key)) {
+    state.lessonsRead.add(key);
+    addXP(20);
+  }
+}
+
+function switchLesson(el, key) {
+  document.querySelectorAll('.lesson-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const content = document.getElementById('lesson-content');
+  content.style.opacity = '0';
+  content.style.transform = 'translateY(8px)';
+  setTimeout(() => {
+    renderLesson(key);
+    content.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+    content.style.opacity = '1';
+    content.style.transform = 'translateY(0)';
+  }, 150);
+}
+
+// ======== FLASHCARDS ========
+
+let activeFilter = 'all';
+function filterCards(el, domain) {
+  document.querySelectorAll('.fc-filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  activeFilter = domain;
+  state.fc.filtered = domain === 'all' ? [...FLASHCARDS] : FLASHCARDS.filter(c => c.domain === domain);
+  state.fc.index = 0;
+  state.fc.flipped = false;
+  renderCard();
+}
+
+function renderCard() {
+  const cards = state.fc.filtered;
+  if (!cards.length) return;
+  const i = state.fc.index;
+  const card = cards[i];
+  document.getElementById('fc-term').textContent = card.term;
+  document.getElementById('fc-def').innerHTML = card.def;
+  document.getElementById('fc-counter').textContent = 'Card '+(i+1)+' of '+cards.length;
+  document.getElementById('card-3d').classList.remove('flipped');
+  state.fc.flipped = false;
+  renderDots();
+  if (!state.cardsStudied.has(card.term)) {
+    state.cardsStudied.add(card.term);
+    addXP(5);
+  }
+}
+
+function renderDots() {
+  const dots = document.getElementById('fc-dots');
+  const cards = state.fc.filtered;
+  const max = Math.min(cards.length, 16);
+  dots.innerHTML = '';
+  for (let i = 0; i < max; i++) {
+    const d = document.createElement('div');
+    d.className = 'fc-dot' + (i === state.fc.index ? ' current' : (i < state.fc.index ? ' done' : ''));
+    dots.appendChild(d);
+  }
+}
+
+function flipCard() {
+  state.fc.flipped = !state.fc.flipped;
+  document.getElementById('card-3d').classList.toggle('flipped', state.fc.flipped);
+}
+
+function nextCard() {
+  state.fc.flipped = false;
+  setTimeout(() => {
+    state.fc.index = (state.fc.index + 1) % state.fc.filtered.length;
+    renderCard();
+  }, 100);
+}
+
+function prevCard() {
+  state.fc.flipped = false;
+  setTimeout(() => {
+    state.fc.index = (state.fc.index - 1 + state.fc.filtered.length) % state.fc.filtered.length;
+    renderCard();
+  }, 100);
+}
+
+document.addEventListener('keydown', (e) => {
+  const fc = document.getElementById('view-flashcards');
+  if (!fc.classList.contains('active')) return;
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ') { e.preventDefault(); flipCard(); }
+});
+
+// ======== QUIZ ========
+
+let quizAnswered = false;
+function startQuiz() {
+  state.quiz = { index: 0, score: 0, answers: [], startTime: Date.now(), finished: false };
+  quizAnswered = false;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUIZ[state.quiz.index];
+  const pct = Math.round(((state.quiz.index) / QUIZ.length) * 100);
+  document.getElementById('quiz-counter').textContent = (state.quiz.index+1) + ' / ' + QUIZ.length;
+  document.getElementById('quiz-progress-fill').style.width = pct + '%';
+  document.getElementById('quiz-domain-label').textContent = q.domain;
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-explanation').innerHTML = '';
+  document.getElementById('quiz-footer').innerHTML = '';
+  quizAnswered = false;
+
+  const letters = ['A','B','C','D'];
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function selectAnswer(selected) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = QUIZ[state.quiz.index];
+  const correct = selected === q.ans;
+  if (correct) state.quiz.score++;
+  state.quiz.answers.push({ q: state.quiz.index, selected, correct });
+
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selected) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+
+  const exp = document.getElementById('quiz-explanation');
+  exp.innerHTML = `<div class="explanation-box"><div class="exp-label">${correct ? '✓ Correct' : '✗ Incorrect'} — Explanation</div><div class="exp-text">${q.exp}</div></div>`;
+
+  const footer = document.getElementById('quiz-footer');
+  const isLast = state.quiz.index === QUIZ.length - 1;
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn btn-primary';
+  nextBtn.style.marginTop = '12px';
+  nextBtn.textContent = isLast ? 'View Results →' : 'Next Question →';
+  nextBtn.onclick = () => {
+    if (isLast) showResults();
+    else { state.quiz.index++; renderQuestion(); }
+  };
+  footer.appendChild(nextBtn);
+}
+
+function showResults() {
+  const elapsed = Math.round((Date.now() - state.quiz.startTime) / 1000);
+  const pct = Math.round((state.quiz.score / QUIZ.length) * 100);
+  const passed = pct >= 80;
+  const earned = state.quiz.score * 25;
+  addXP(earned);
+  if (state.bestScore === null || pct > state.bestScore) state.bestScore = pct;
+
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-results').classList.add('active');
+
+  document.getElementById('results-badge').innerHTML = passed ? '🏆' : '📚';
+  document.getElementById('results-badge').style.background = passed ? 'var(--green-bg)' : 'var(--amber-bg)';
+  document.getElementById('results-score').textContent = pct + '%';
+  document.getElementById('results-score').style.color = passed ? 'var(--green)' : 'var(--amber)';
+  document.getElementById('results-label').textContent = passed ? 'Excellent — Exam Ready!' : 'Keep studying — target is 80%+';
+  document.getElementById('res-correct').textContent = state.quiz.score;
+  document.getElementById('res-correct').style.color = 'var(--green)';
+  document.getElementById('res-wrong').textContent = QUIZ.length - state.quiz.score;
+  document.getElementById('res-wrong').style.color = 'var(--red)';
+  document.getElementById('res-xp').textContent = '+' + earned;
+  document.getElementById('res-xp').style.color = 'var(--amber)';
+  document.getElementById('res-time').textContent = elapsed + 's';
+
+  const bd = document.getElementById('results-breakdown');
+  bd.innerHTML = '<div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Question Breakdown</div>';
+  state.quiz.answers.forEach(a => {
+    const q = QUIZ[a.q];
+    const div = document.createElement('div');
+    div.className = 'breakdown-item ' + (a.correct ? 'correct-item' : 'wrong-item');
+    div.innerHTML = `<span style="font-size:14px;">${a.correct ? '✓' : '✗'}</span><span style="font-size:13px;color:var(--text2);">Q${a.q+1}: ${q.q.substring(0,60)}…</span>`;
+    bd.appendChild(div);
+  });
+  window.scrollTo(0,0);
+}
+
+function restartQuiz() {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-quiz').classList.add('active');
+  startQuiz();
+}
+
+// ======== INIT ========
+renderLesson('cia');
+navigate('dashboard');
+</script>
+</body>
+</html>
