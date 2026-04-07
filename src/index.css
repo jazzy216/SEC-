@@ -1,0 +1,116 @@
+:root {
+  --bg: #050a0e;
+  --bg2: #080f14;
+  --panel: #0a1520;
+  --panel2: #0d1c2a;
+  --border: #0e3a5c;
+  --border2: #1a5a8a;
+  --cyan: #00d4ff;
+  --cyan2: #00a8cc;
+  --green: #00ff88;
+  --green2: #00cc6a;
+  --amber: #ffaa00;
+  --red: #ff3355;
+  --purple: #a855f7;
+  --text: #c8dde8;
+  --text2: #7a9bb0;
+  --text3: #4a6878;
+  --mono: 'Share Tech Mono', monospace;
+  --display: 'Orbitron', monospace;
+  --body: 'Rajdhani', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Scanline overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,212,255,0.012) 2px,
+    rgba(0,212,255,0.012) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Grid background */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan2); }
+
+/* Selection */
+::selection { background: rgba(0,212,255,0.2); color: var(--cyan); }
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px currentColor; }
+  50% { opacity: 0.4; box-shadow: none; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
